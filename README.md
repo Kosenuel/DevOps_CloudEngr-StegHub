@@ -9,7 +9,7 @@ __What you should expect to see here__
 As you explore my journal, have it at the back of your mind to expect to see information that is relevant to both beginners, intermediate, and experts in the field. Because I followed "who-know-road" (i.e StegHub) to guide/show me through the different terrains (easy and complex) in the DevOps and Cloud Engineering Continent _(so that I nor go miss road)_
 
 
-### Content of this repository
+### Contents of this repository
 
 - __Project 1: [Deploy a Complete LAMP stack on AWS](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/1.LAMP_Stack)__ - Here I successfully deployed a LAMP (Linux, Apache, MySQL, PHP) web stack on a cloud platform (an EC2 instance on AWS).
 -
