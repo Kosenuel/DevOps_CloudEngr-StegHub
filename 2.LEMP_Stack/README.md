@@ -250,13 +250,22 @@ The LEMP Stack is a popular web development platform made up of four components:
 
 6. **Insert Records**:
    ```sql
-   INSERT INTO todo_list (content) VALUES ("Task 1"), ("Task 2"), ("Task 3"), ("Task 4");
+   INSERT INTO todo_database.todo_list (content) VALUES ("This is the first most important task I have to do for the day");
+
+   INSERT INTO todo_database.todo_list (content) VALUES ("This is the second task I have to do for the day - in order of hierarchy");
+
+   INSERT INTO todo_database.todo_list (content) VALUES ("This is the third task I have to do for the day - in order of hierarchy");
+
+   INSERT INTO todo_database.todo_list (content) VALUES ("Let me quickly add this one more item to my to do list before I forget");
    ```
 
 7. **Verify Data**:
    ```sql
    SELECT * FROM todo_list;
    ```
+![Query the mysql table to view its content](./images/view_table.png)
+
+
 
    Exit MySQL:
    ```sql
@@ -293,6 +302,7 @@ The LEMP Stack is a popular web development platform made up of four components:
    ```
    http://35.178.88.186/todo_list.php
    ```
+![Php script fetching records from the MySQL Database and displaying on the webpage](./images/test_todo_list_php.png)
 
 ## Conclusion
 Congratulations! You've successfully set up a LEMP stack on AWS. This LEMP stack (just like the LAMP stack) provides a solid platform for hosting and serving web apps. If you as a developer want to deploy scalable solutions that can be relied upon, then you would need to seriously consider one of these stacks as they have been tested, tried and proven to meet expectations.
