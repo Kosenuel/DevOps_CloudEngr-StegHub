@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html ng-app="myBookApp" ng-controller="myBookCtrl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Mgmt by Kosenuel thru StegHub</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+  <script src="script.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      background-color: #f8f9fa;
+      display: flex;
+    }
+    .sidebar {
+      background-color: #343a40;
+      color: #fff;
+      width: 250px;
+      height: 100vh;
+      padding: 20px;
+      position: fixed;
+    }
+    .sidebar h1 {
+      color: #e0e5eb;
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .container {
+      margin-left: 270px; /* Space for sidebar */
+      padding: 40px; /* Comfortable padding around the content */
+      width: calc(100% - 270px);
+      box-sizing: border-box; /* Ensure padding doesn’t affect width */
+    }
+    h2 {
+      color: #495057;
+      margin-top: 20px;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+    form {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    .form-group {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      flex: 1;
+      padding-right: 10px;
+      font-weight: bold;
+      color: #343a40;
+    }
+    .form-group input {
+      flex: 3;
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      width: 100%;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      display: inline-block;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      background-color: #ffffff;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    tr:hover {
+      background-color: #e9ecef;
+    }
+    .action-cell {
+      text-align: center;
+    }
+    .action-cell button {
+      background-color: #dc3545;
+    }
+    .action-cell button:hover {
+      background-color: #c82333;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h1>StegHub</h1>
+    <p>Book Management</p>
+    <p>by Kosenuel™</p>
+  </div>
+
+  <div class="container">
+    <h2>Add New Book</h2>
+    <form ng-submit="add_book()">
+      <div class="form-group">
+        <label for="Name">Name:</label>
+        <input type="text" id="Name" ng-model="Name" required>
+      </div>
+      <div class="form-group">
+        <label for="Isbn">ISBN:</label>
+        <input type="text" id="Isbn" ng-model="Isbn" required>
+      </div>
+      <div class="form-group">
+        <label for="Author">Author:</label>
+        <input type="text" id="Author" ng-model="Author" required>
+      </div>
+      <div class="form-group">
+        <label for="Pages">Pages:</label>
+        <input type="number" id="Pages" ng-model="Pages" required>
+      </div>
+      <button type="submit">Add Book</button>
+    </form>
+
+    <h2>Book List</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>ISBN</th>
+          <th>Author</th>
+          <th>Pages</th>
+          <th class="action-cell">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="book in books">
+          <td>{{book.name}}</td>
+          <td>{{book.isbn}}</td>
+          <td>{{book.author}}</td>
+          <td>{{book.pages}}</td>
+          <td class="action-cell"><button ng-click="del_book(book)">Delete</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
