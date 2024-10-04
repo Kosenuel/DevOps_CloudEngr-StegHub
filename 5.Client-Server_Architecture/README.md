@@ -170,5 +170,18 @@ Let us now make sure we can actually do stuff in our server from our client:
    ```
    ![Display the contents of the table](./images/view_table's_content.png)
 
+### Challenges Faced:
+
+I did face some challenges along the way. One notable issue was configuring the MySQL server to listen for client connections. This challenge arose because I wasn't familiar with Amazon Linux, as I had primarily worked with other Linux distributions. After some research, I discovered the location of the MySQL configuration file for Amazon Linux (/etc/mysql/mysql.conf.d/mysql.cnf) and was able to set the bind address correctly, which resolved the issue.
+
+Another issue came while I was securing the MySQL environment. I was trying to create a user for client access and data manipulation, but I encountered a problem: the default root user had been assigned a password that I wasn’t aware of, since I hadn’t specified one during installation. Through further research, I learned that if you don’t set a password for the root user when running the mysql_secure_installation script on Amazon Linux, a default password is generated which can be gotten by running this command:
+```bash 
+ sudo cat /var/log/mysqld.log | grep 'temporary password'
+ ```
+ which you need to change before proceeding with creating a MySQL user.
+
+
 ## Conclusion
 Congratulations, bro/sis, You have just built a fully functional MySQL Client-Server setup. this project has helped you to understand how to setup a server database (mysql in our cas) and setup a client to access and perform operations on the server db. How cool is that?
+
+
