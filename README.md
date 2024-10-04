@@ -18,4 +18,7 @@ Kindly keep in mind that as you navigate through this repo, you can anticipate t
 - **Project 3:** [**Deployed a MERN Stack on AWS**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/3.MERN_Stack):This project helped me understand in great depth how modern web apps functions and I am happy to have executed this project. The web app deployed here was a "to-do" web app that helps users track their to do lists.
 
 - **Project 4:** [**Deploy a MEAN Stack on AWS**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/4.MEAN_Stack): Here, I deployed a web app called "Book Management", it helps users add, delete, view and track records of books (for an online store or library supposedly). I achieved this using the MEAN Stack (MongoDB, Express js, Angular js, and Node js).
+
+- **Project 5:** [**Client Server Architecture with mysql**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/5.Client-Server_Architecture): This project illustrates the dynamic communication between clients and servers within a network (specifically over the internet). Here, we set up a MySQL Client-Server architecture using Amazon Web Services (AWS).
+
 ---
