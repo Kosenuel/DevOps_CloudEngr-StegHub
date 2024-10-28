@@ -22,9 +22,17 @@ Kindly keep in mind that as you navigate through this repo, you should anticipat
 - **Project 5:** [**Client Server Architecture with mysql**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/5.Client-Server_Architecture): This project illustrates the dynamic communication between clients and servers within a network (specifically over the internet). Here, we set up a MySQL Client-Server architecture using Amazon Web Services (AWS).
 
 - **Project 6:** [**Web Solution With  WordPress**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/6.Web_Solution_With_Word_Press): In this project, we explored how to deploy a wordpress solution for an organization and all the necessary steps you would need as a dev guy to get this done.
+
 - **Project 7:** [**DevOps Tooling Website Solution**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/7.DevOps_Tooling_Website_Solution): In this project, we configured a web architecture where we had three web servers access a single nfs server and a single database, this made the webservers serve thesame content but on different machines.
+
 - **Project 8:** [**Load Balancer Using Apache**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/8.Load_Balancer_With_Apache): In this project, we configured Apache to distribute loads evenly to the 3 webservers in the previous project. We created a single load balancing server that when contacted (via its public IP), it routes the request(s) of the clients to any of the 3 servers behind this following the `by traffic` method.
+
 - **Project 9:** [**Tooling Website deployment**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/9.Tooling_Website_Deployment_and_Automation): We created a pipeline (using Jen) that looks at a git repository for changes _(push changes)_ and when it finds any change(s), it builds and deploys the artifact to the NFS Server we created in the last two projects.
+
 - **Project 10:** [**Load Balancer With Nginx (TLS/SSL)**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/10.Load_Balancer_With_Nginx_%26_SSL-TLS): In this project, we created a load balancer, this time, using Nginx. We didn't just stopped there, we also went to add a domain name to our Load balancer whilst assigning an Elastic IP address to it.
 Then in the side notes, I attempted to create a Prometheus + Grafana monitoring solution to tie these up. Click to find out more...
+
+- **Project 11:** [**Ansible - configuration management**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/11.Ansible_-_Config-Mgmt): In this project, we created a playbook that automates the configuration of a web server or hundreds of web servers as the case may be. This project was a bit challenging for me, but I am glad I was able to pull through.
+
+- **Project 12:** [**Ansible - Refactoring and Static Assignments**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/12.Ansible-Refactoring_and_Static_Assignments): In this project, we refactored the playbook we created in the last project for better readability, reusability and organization. We also created a new playbook that verifies the functionality of an Apache web server in this project.
 ---
