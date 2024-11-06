@@ -335,7 +335,7 @@ cd /home/ubuntu/ansible-config-artifact
 ansible-playbook -i inventory/uat.ini playbooks/site.yml
 ```
 ![UAT playbook execution](./images/run-playbook-on-uat.png)
-*Figure 3.1: UAT playbook execution*
+*Figure 3.4: UAT playbook execution*
 
 ### 6.4 Verify Deployment
 
@@ -347,11 +347,13 @@ http://<Web2-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php
 ```
 
 ![UAT webserver access](./images/access-uat-webserver.png)
+
+![UAT webserver access](./images/access-uat-webserver-2.png)
 *Figure 4: UAT webserver access*
 
 ## Conclusion
 
-This completes the Ansible refactoring and implementation of static assignments. The new structure improves code organization, reusability, and maintainability. The Ansible architecture now includes dedicated roles and a more modular approach to configuration management.
+With this, we come to the end of the Ansible refactoring and implementation of static assignments/project. This new structure we implemented improves code organization, reusability, and maintainability. The Ansible architecture now includes dedicated roles and a more modular approach to configuration management.
 
 ![Updated Ansible architecture diagram](./images/new-ansible-arch.png)
 *Figure 5: Updated Ansible architecture diagram*
