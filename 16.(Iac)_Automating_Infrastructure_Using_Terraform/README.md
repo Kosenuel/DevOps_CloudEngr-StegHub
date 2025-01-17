@@ -4,15 +4,48 @@ After successfully building AWS infrastructure manually for 2 websites, we will 
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
+   - [Required Tools](#required-tools)
+   - [Knowledge Requirements](#knowledge-requirements)
+
 2. [AWS IAM Setup](#aws-iam-setup)
+   - [Creating the Terraform IAM User](#creating-the-terraform-iam-user)
+   - [Common IAM Setup Issues](#common-iam-setup-issues-and-solutions)
+
 3. [AWS CLI and SDK Configuration](#aws-cli-and-sdk-configuration)
+   - [AWS CLI Setup](#aws-cli-setup)
+   - [Python SDK Installation](#python-sdk-boto3-installation)
+
 4. [S3 Backend Configuration](#s3-backend-configuration)
+   - [Creating S3 Bucket for Terraform State](#creating-s3-bucket-for-terraform-state)
+   - [S3 Backend Security Best Practices](#s3-backend-security-best-practices)
+
 5. [Understanding Terraform Concepts](#understanding-terraform-concepts)
+   - [Key Terraform Terminology](#key-terraform-terminology)
+   - [Common Terraform Concept Issues](#common-terraform-concept-issues)
+
 6. [Infrastructure Code Structure](#infrastructure-code-structure)
-7. [VPC and Networking](#vpc-and-networking-configuration)
-8. [Security Groups](#security-groups-and-network-acls)
-9. [Testing Refactored Code](#testing-the-refactored-code)
-10. [Best Practices](#best-practices-for-state-management)
+   - [Project Directory Setup](#project-directory-setup)
+   - [File Organization](#file-organization)
+
+7. [VPC and Networking Configuration](#vpc-and-networking-configuration-hardcoded-version)
+   - [Provider Configuration](#provider-configuration)
+   - [Subnet Configuration](#subnet-configuration)
+   - [Understanding Dynamic Subnet Creation](#understanding-the-dynamic-subnet-creation)
+   - [Best Practices for VPC Configuration](#best-practices-for-vpc-configuration)
+
+8. [Understanding Terraform Configuration Segmentation](#understanding-terraform-concepts)
+
+
+9. [Testing and Verification](#testing-your-configuration)
+   - [Validation Steps](#validate-configuration)
+   - [Resource Verification](#verify-resources)
+
+
+10. [Conclusion](#conclusion)
+    - [Project Achievements](#project-achievements)
+    - [Benefits Realized](#benefits-realized)
+    - [Lessons Learned](#lessons-learned)
+    - [Future Considerations](#future-considerations)
 
 ## Prerequisites
 
