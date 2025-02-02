@@ -1,0 +1,64 @@
+#!/bin/bash
+
+# Set up amazon efs
+yum install -y git 
+git clone https://github.com/aws/efs-utils
+cd efs-utils
+yum install -y make rpm-build cargo openssl-devel rust
+# sudo yuminstall -y linux-headers-$(uname -r)
+make rpm
+yum install -y ./build/amazon-efs-utils*rpm
+
+# Create the /var/www/ directory and mount EFS
+mkdir /var/www/
+mount -t efs -o tls,accesspoint=${access_point} ${efs_id}:/ /var/www/
+
+# Install and configure Apache (httpd)
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+
+# Install PHP and required modules
+yum module reset php -y
+yum module enable php:remi-7.4 -y
+yum install -y wget mysql php php-common php-mbstring php-opcache php-intl php-xml php-gd php-curl php-mysqlnd php-zip php-fpm php-json
+systemctl start php-fpm
+systemctl enable php-fpm
+
+# Download and extract WordPress
+wget http://wordpress.org/latest.tar.gz
+tar xzvf latest.tar.gz
+rm -rf latest.tar.gz
+
+# Configure WordPress
+cp wordpress/wp-config-sample.php wordpress/wp-config.php
+mkdir /var/www/html/
+cp -R ./wordpress/* /var/www/html/
+
+# Set up the health check file
+cd /var/www/html
+mkdir /var/www/html/healthz
+echo "healthy" > /var/www/html/healthz/index.html
+chmod 644 /var/www/html/healthz/index.html
+
+# Update the wp-config.php with database connection details
+sed -i "s/localhost/${rds_endpoint}/g" wp-config.php
+sed -i "s/username_here/${db_user}/g" wp-config.php
+sed -i "s/password_here/${db_password}/g" wp-config.php
+sed -i "s/database_name_here/wordpressdb/g" wp-config.php
+
+# Set correct SELinux context
+chcon -R -t httpd_sys_rw_content_t /var/www/html/
+
+# Restart Apache to apply changes
+systemctl restart httpd
+
+# Wait for the MySQL RDS instance to be available and create the database and user
+mysql -h ${rds_endpoint} -u ${rds_user} -p${rds_password} <<EOF
+CREATE DATABASE IF NOT EXISTS wordpressdb;
+CREATE USER IF NOT EXISTS '${db_user}'@'%' IDENTIFIED BY '${db_password}';
+GRANT ALL PRIVILEGES ON wordpressdb.* TO '${db_user}'@'%';
+FLUSH PRIVILEGES;
+EOF
+
+echo "WordPress setup is complete!"

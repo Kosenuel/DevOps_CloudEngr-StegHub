@@ -1,0 +1,131 @@
+#!/bin/bash
+set -euo pipefail #Exit on error, undefined variables, and pipeline failures
+exec > >(tee /var/log/userdata.log) 2>&1  # Log all output
+
+# --------------------------------------------------
+# Helper functions 
+# --------------------------------------------------
+function retry {
+    local retries = 5
+    local delay   = 10
+    until "$@"; do
+        echo "Command failed. Retrying in $delay secconds..."
+        sleep $delay
+        ((retries--)) || return 1
+    done
+}
+
+# --------------------------------------------------
+# System Updates & Base Packages
+# --------------------------------------------------
+echo "Updating system and installing dependencies..."
+yum update -y
+retry yum install -y git mysql make rpm-build cargo openssl-devel rust wget
+
+# --------------------------------------------------
+# Install and Configure EFS Utils 
+# --------------------------------------------------
+echo "Setting up EFS..."
+if ! rpm -q amazon-efs-utils; then 
+    echo "Installing EFS utilities..."
+    git clone https://github.com/aws/efs-utils
+    cd efs-utils
+    make rpm
+    yum install -y ./build/amazon-efs-utils*rpm
+    cd ..
+fi
+
+# Create and Mount EFS (with idempotency)
+mkdir -p /var/www/
+if ! mountpoint -q /var/www; then
+    mount -t efs -o tls,accesspoint=${access_point} ${efs_id}:/ /var/www/
+    # Add to fstab for persistence
+    echo "${efs_id}:/ /var/www/ efs _netdev,tls,accesspoint=${access_point} 0 0" >> /etc/fstab
+fi
+
+# --------------------------------------------------
+# Install Web Stack
+# --------------------------------------------------
+echo "Installing Apache and PHP"
+# Install Remi repo
+retry yum install -y https://rpms.remirepo.net/enterprise/remi-release-7.rpm
+yum module reset php -y
+yum module enable php:remi-8.2 -y
+
+#Install packages
+retry yum install -y httpd php php-common php-mbstring php-opcache php-intl \
+    php-xml php-gd php-curl php-mysqlnd php-zip php-fpm php-json
+
+# --------------------------------------------------
+# Configure Apache & PHP
+# --------------------------------------------------
+echo "Configuring web server..."
+sed -i 's/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/' /etc/php.ini
+systemctl enable --now php-fpm httpd
+
+# Firewall configuration
+if systemctl is-active --quiet firewalld; then
+    firewall-cmd --permanent --ad-service={http,https}
+    firewall-cmd --reload
+fi
+
+# --------------------------------------------------
+# Application Deployment
+# --------------------------------------------------
+echo "Deploying application..."
+WEB_ROOT="/var/www/html"
+mkdir -p ${WEB_ROOT}/healthz
+
+# Clone repo (with idempotency)
+if [! -d "tooling"]; then 
+    git clone https://github.com/kosenuel/tooling.git
+fi
+
+# Copy files if directory is empty
+if [ -z "$(ls -A ${WEB_ROOT})" ]; then 
+    cp -R tooling/html/* ${WEB_ROOT}/
+fi
+
+# Set permissions
+chown -R apache:apache ${WEB_ROOT}
+chcon -R -t httpd_sys_rw_content_t ${WEB_ROOT}
+setsebool -P httpd_can_network_connect 1
+setsebool -P httpd_use_fusefs 1
+
+# Health check file
+echo "Healthy" > ${WEB_ROOT}/healthz/index.html
+chmod 644 ${WEB_ROOT}/healthz/index.html
+
+# --------------------------------------------------
+# Database Configuration
+# --------------------------------------------------
+echo "Configuring database..."
+# Wait for RDS to be available
+until mysql -h ${rds_endpoint} -u ${rds_user} -e 'SELECT 1'; do
+    echo "Waiting for database connection..."
+    sleep 10
+done
+
+# Execute SQL commands
+mysql -h ${rds_endpoint} -u ${rds_user} <<EOF
+CREATE DATABASE IF NOT EXISTS toolingdb;
+CREATE USER IF NOT EXISTS '${db_user}'@'%' IDENTIFIED BY '${db_password}';
+GRANT ALL PRIVILEGES ON toolingdb.* TO '${db_user}'@'%';
+FLUSH PRIVILEGES;
+EOF
+
+# Import schema
+mysql -h ${rds_endpoint} -u ${rds_user} toolingdb < tooling/tooling-db.sql
+
+# Update application configuration 
+sed -i "s/\$db = mysqli_connect('127.0.0.1', 'admin', 'admin', 'tooling');/\$db = mysqli_connect('${rds_endpoint}', '${db_user}', '${db_password}');/"${WEB_ROOT}/functions.php
+
+
+# --------------------------------------------------
+# Finalization
+# --------------------------------------------------
+echo "Restarting services..."
+systemctl restart httpd php-fpm
+
+echo "Provisioning completed successfully!"
+
