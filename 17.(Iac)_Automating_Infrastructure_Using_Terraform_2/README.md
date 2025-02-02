@@ -1,6 +1,6 @@
 # (Iac) Automating AWS Infrastructure with Terraform - Part 2
 
-### 📚 Table of Contents
+### Table of Contents
 
 #### Infrastructure Setup
 - [Introduction](#introduction)
@@ -40,13 +40,7 @@
   - [Key Achievements](#-key-achievements)
   - [Best Practices Implemented](#-best-practices-implemented)
   - [Maintenance Guidelines](#-maintenance-guidelines)
-  - [Future Improvements](#-future-improvements)
   - [Lessons Learned](#-lessons-learned)
-  - [Next Steps](#-next-steps)
-
-#### File Structure
-- [Project File Structure After Resources](#-project-file-structure)
-- [Main Configuration File](#main-terraform-configuration-maintf)
 
 
 ## Introduction
@@ -54,7 +48,7 @@ Welcome to Part 2 of our Infrastructure as Code (IaC) journey with Terraform! In
 
 > 📘 **Prerequisites**: Please complete [Part 1](../16.(Iac)_Automating_Infrastructure_Using_Terraform/README.md) before starting this guide.
 
-## 🎯 Project Objectives
+## Project Objectives
 By the end of this guide, you will:
 - Understand advanced networking concepts
 - Create a complete multi-tier AWS infrastructure
@@ -68,24 +62,24 @@ By the end of this guide, you will:
 - Git (latest version)
 - Code editor (VS Code recommended)
 
-## 📚 Understanding Networking Fundamentals
+## Understanding Networking Fundamentals
 
 Before diving deeper into infrastructure automation, let us strengthen our networking knowledge.
 
 ### Recommended Learning Resources
 
-#### 🎥 Video Resources
+#### Video Resources
 - [Introduction to Networking](https://www.youtube.com/watch?v=rL8RSFQG8do) by Eli the Computer Guy
 - [TCP/IP and Subnet Masking](https://www.youtube.com/watch?v=EkNq4TrHP_U) by Eli the Computer Guy
 - [Complete Networking Playlist](https://www.youtube.com/playlist?list=PLF360ED1082F6F2A5)
 
-#### 📖 Reading Materials
+#### Reading Materials
 1. [Networking Fundamentals Part 1](https://www.digitalocean.com/community/tutorials/an-introduction-to-networking-terminology-interfaces-and-protocols)
 2. [Understanding IP Addresses & CIDR](https://www.digitalocean.com/community/tutorials/understanding-ip-addresses-subnets-and-cidr-notation-for-networking)
 
 > ⚠️ **Note**: Don't worry if these concepts are new to you at first. Take your time to understand them - they are crucial for cloud infrastructure design.
 
-## 🏗 Infrastructure Overview
+## Infrastructure Overview
 
 ![Infrastructure Architecture](./images/architecture.png)
 
@@ -102,7 +96,7 @@ Our infrastructure consists of:
 | EFS | Shared file storage |
 | Bastion Host | Secure access point |
 
-### 🔐 Security Groups Structure
+### Security Groups Structure
 Here's what we're going to build:
 ```mermaid
 graph TB
@@ -273,7 +267,7 @@ tags = {
 ![Screenshot: AWS Console View](./images/subnet-console.png)
 *Fig: Private Subnets Created in AWS Console*
 
-### 🏷️ Resource Tagging Strategy
+### Resource Tagging Strategy
 
 Tagging is crucial for:
 - Resource organization
@@ -303,7 +297,7 @@ tags = merge(
 
 > 💡 **Useful Tip**: Store common tags in variables to maintain consistency across resources.
 
-## 🌐 Internet Gateway Configuration
+## Internet Gateway Configuration
 
 ### Creating the Internet Gateway
 
@@ -498,7 +492,7 @@ resource "aws_route_table_association" "public-subnets-assoc" {
 ![Screenshot: Private Route Associations](./images/private-route-assoc.png)
 *Fig: Private Subnet Associations*
 
-> 🔍 **Verification**: After applying these configurations, Ensure that you have these resources:
+> **Verification**: After applying these configurations, Ensure that you have these resources:
 > - [x] VPC
 > - [x] 2 Public Subnets
 > - [x] 4 Private Subnets
@@ -935,7 +929,7 @@ resource "aws_security_group_rule" "inbound-mysql-webserver" {
 }
 ```
 
-> 🔒 **Security Group Best Practices**:
+> **Security Group Best Practices**:
 > - Follow principle of least privilege
 > - Use security group references instead of CIDR blocks where possible
 > - Document all rule changes
@@ -1064,7 +1058,7 @@ resource "aws_lb_target_group" "tooling-tgt" {
 > - Use appropriate health check paths
 > - Set reasonable thresholds based on application behavior
 
-## 🥇SSL/TLS Certificate
+## SSL/TLS Certificate
 
 Before creating load balancers, we will set up an SSL certificate using AWS Certificate Manager (ACM), then create a public hosted zone and the necessary records.
 
@@ -1247,7 +1241,7 @@ resource "aws_lb_listener" "int-alb-listener" {
 
 ```
 
-### 📖Load Balancer Rules
+### Load Balancer Rules
 ```bash
 ## Listener Rule for tooling
 resource "aws_lb_listener_rule" "tooling-listener" {
@@ -1298,7 +1292,7 @@ output "alb_target_group_arn" {
 *Fig: Content of `output.tf` File*
 
 
-# 📜Launch Templates Configuration
+# Launch Templates Configuration
 
 The purpose of Launch Templates is to provide the configuration for EC2 instances that will be launched by our Auto Scaling Groups. We will create templates for both our WordPress and Tooling servers.
 
@@ -2567,7 +2561,7 @@ output "bastion_public_ip" {
 
 ## Infrastructure Verification Checklist
 
-### 1. 🔍 Network Components
+### 1. Network Components
 - [x] VPC Created
 - [x] Subnets Properly Configured
 - [x] Internet Gateway Attached
@@ -2585,7 +2579,7 @@ terraform show | grep -A 5 "aws_subnet"
 ![Screenshot: Network Verification](./images/network-verify.png)
 *Fig: Network Components in AWS Console*
 
-### 2. 🛡️ Security Configuration
+### 2. Security Configuration
 - [x] Security Groups Created
 - [x] IAM Roles and Policies Attached
 - [x] SSL Certificate Validated
@@ -2599,7 +2593,7 @@ aws ec2 describe-security-groups --filters Name=vpc-id,Values=Put-In-Vpc-id-here
 ![Screenshot: Security Verification](./images/security-verify.png)
 *Fig: Security Configuration Status*
 
-### 3. 🔄 Load Balancer Setup
+### 3. Load Balancer Setup
 - [x] External ALB Functioning
 - [x] Internal ALB Functioning
 - [x] Target Groups Healthy
@@ -2613,13 +2607,13 @@ aws elbv2 describe-target-health --target-group-arn Put-In-Target-group-arn-here
 ![Screenshot: Load Balancer Health](./images/lb-health.png)
 *Fig: Load Balancer Health Status*
 
-### 4. 🖥️ Compute Resources
+### 4. Compute Resources
 - [x] Launch Templates Verified
 - [x] Auto Scaling Groups Active
 - [x] EC2 Instances Running
 - [x] Instance Health Checks Passing
 
-### 5. 💾 Storage Configuration
+### 5. Storage Configuration
 - [x] EFS Mounted Correctly
 - [x] RDS Instance Available
 - [x] Database Connectivity
@@ -2731,7 +2725,7 @@ terraform destroy
 > - Check for dependencies before removing resources
 > - Keep state files backed up
 
-# 🎯Conclusion
+# Conclusion
 
 ## Project Summary
 We have successfully created a robust, scalable AWS infrastructure using Terraform, implementing:
@@ -2764,7 +2758,7 @@ We have successfully created a robust, scalable AWS infrastructure using Terrafo
 - Secure access management
 - SSL/TLS implementation
 
-## 💡 Best Practices Implemented
+## Best Practices Implemented
 
 1. **Code Organization**
    - Partially Modular Terraform configuration
@@ -2800,7 +2794,7 @@ We have successfully created a robust, scalable AWS infrastructure using Terrafo
    - Streamlined deployment process
 
 
-> 💡 **Final Note**: It is important to keep the documentation updated as your infrastructure evolves. When you review and update your documentation regularly, you can be sure of long-term maintainability and reliability.
+> 💡 **Final Note**: It is important to keep your infra documentation updated as your infrastructure evolves. When you review and update your documentation regularly, you can be sure of long-term maintainability and reliability.
 
 ![Screenshot: Final Infrastructure](./images/final-infra.png)
 *Fig: Complete Infrastructure Overview*
