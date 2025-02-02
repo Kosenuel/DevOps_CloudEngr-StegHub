@@ -35,7 +35,7 @@
   - [Documentation and Handover](#documentation-and-handover)
 
 #### Project Completion
-- [Conclusion](#-conclusion)
+- [Conclusion](#project-summary)
   - [Project Summary](#project-summary)
   - [Key Achievements](#-key-achievements)
   - [Best Practices Implemented](#-best-practices-implemented)
@@ -1066,7 +1066,7 @@ resource "aws_lb_target_group" "tooling-tgt" {
 
 ## 🥇SSL/TLS Certificate
 
-Before creating load balancers, let us set up an SSL certificate using AWS Certificate Manager (ACM), then create a public hosted zone and the necessary records.
+Before creating load balancers, we will set up an SSL certificate using AWS Certificate Manager (ACM), then create a public hosted zone and the necessary records.
 
 Create a new file `cert.tf`:
 
@@ -1300,7 +1300,7 @@ output "alb_target_group_arn" {
 
 # 📜Launch Templates Configuration
 
-Launch Templates provide the configuration for EC2 instances that will be launched by our Auto Scaling Groups. We will create templates for both our WordPress and Tooling servers.
+The purpose of Launch Templates is to provide the configuration for EC2 instances that will be launched by our Auto Scaling Groups. We will create templates for both our WordPress and Tooling servers.
 
 ## Create Launch 
 > 💡**Note:** You have to create all the files/configs from here to the `rds` config before terraform would start responding to your `terraform apply` command with success codes. This is because from here on, each component most likely have `inter-dependency(ies)` on components in other section. Kindly keep this in mind as we proceed.
@@ -2716,7 +2716,7 @@ terraform validate
 
 ```bash
 # Destroy specific resources
-terraform destroy -target=aws_instance.example
+terraform destroy -target=aws_instance.ur-instance-name
 
 # Destroy entire infrastructure
 terraform destroy
@@ -2767,7 +2767,7 @@ We have successfully created a robust, scalable AWS infrastructure using Terrafo
 ## 💡 Best Practices Implemented
 
 1. **Code Organization**
-   - Modular Terraform configuration
+   - Partially Modular Terraform configuration
    - Clear variable management
    - Consistent tagging strategy
    - Well-documented resources
@@ -2776,7 +2776,6 @@ We have successfully created a robust, scalable AWS infrastructure using Terrafo
    - Principle of least privilege
    - Network segmentation
    - Encryption at rest and in transit
-   - Regular security updates
 
 3. **Scalability**
    - Auto Scaling Groups
@@ -2784,45 +2783,7 @@ We have successfully created a robust, scalable AWS infrastructure using Terrafo
    - Elastic storage solutions
    - Performance monitoring
 
-## 🔄 Maintenance Guidelines
 
-### Daily Operations
-- Monitor CloudWatch metrics
-- Check system health
-- Review security logs
-- Verify backup completion
-
-### Weekly Tasks
-- Review performance metrics
-- Update documentation
-- Check cost optimization
-- Verify compliance
-
-### Monthly Tasks
-- Security patch updates
-- Resource optimization
-- Backup testing
-- Disaster recovery drills
-
-## 📈 Opportunities for Future Improvements
-
-1. **Cost Optimization**
-   - Implement auto-scaling based on schedules
-   - Review resource utilization
-   - Consider reserved instances
-   - Optimize storage usage
-
-2. **Security Enhancements**
-   - Implement WAF
-   - Add intrusion detection
-   - Enhanced monitoring
-   - Regular security audits
-
-3. **Performance Optimization**
-   - CDN implementation
-   - Cache optimization
-   - Database tuning
-   - Load testing
 
 ## 🎓 Lessons Learned
 
@@ -2838,14 +2799,8 @@ We have successfully created a robust, scalable AWS infrastructure using Terrafo
    - Improved collaboration workflows
    - Streamlined deployment process
 
-## 🚀 Next Steps
 
-   - Plan for disaster recovery
-   - Consider multi-region deployment
-   - Implement CI/CD pipeline
-   - Regular security assessments
-
-> 💡 **Final Note**: It is important to keep the documentation updated as your infrastructure evolves. Regular reviews and updates ensures long-term maintainability and reliability.
+> 💡 **Final Note**: It is important to keep the documentation updated as your infrastructure evolves. When you review and update your documentation regularly, you can be sure of long-term maintainability and reliability.
 
 ![Screenshot: Final Infrastructure](./images/final-infra.png)
 *Fig: Complete Infrastructure Overview*
