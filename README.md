@@ -43,4 +43,8 @@ Then in the side notes, I attempted to create a Prometheus + Grafana monitoring 
 - **Project 15:** [**AWS Cloud Solution for 2 Company-owned sites**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/15.Cloud-Solution(AWS)-For-2-Websites-Owned-by-a-Company): We did something important here. We designed and implemented a robust cloud infrastructure that ensures high availability, scalability, and security of two company-owned websites.
 
 - **Project 16:** [**(Iac) Automating Infrastructure Using Terraform**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/16.(Iac)_Automating_Infrastructure_Using_Terraform#testing-your-configuration): This project taught me the importance of proper planning, code organization, and thinking systematically about cloud infrastructure. I was also exposed to the power of Infrastructure as Code (IaC), and how it can make one's task easy.
+
+- **Project 17:** [**(Iac) Automating Infrastructure Using Terraform Part 2**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/17.(Iac)_Automating_Infrastructure_Using_Terraform_Part_2#-lessons-learned): In this project, we created a terraform configuration that provisions all the resources needed to create the infrastructure we created in the last project (where we created the infrastructure manually)
+
+- **Project 16:** [**(Iac) Automating Infrastructure Using Terraform Part 3**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/18.(Iac)_Automating_Infrastructure_Using_Terraform_Part_3): Here, we modularized our terraform configuration, we refactored the codebase of the last project to make it more readable, reusable and maintainable.
 ---

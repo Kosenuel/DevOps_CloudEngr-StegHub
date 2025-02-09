@@ -172,7 +172,7 @@ As your infrastructure grows, maintaining a well-organized Terraform codebase be
 
 ### Dynamic Blocks for Security Groups
 
-Security groups often have repetitive ingress and egress rules. Dynamic blocks allow you to define these rules programmatically, reducing code duplication.
+Security groups often have repetitive ingress and egress rules. Dynamic blocks helps you to define these rules programmatically, thereby, reducing code duplication.
 
 **Now We Refactor Our Inbounds and Outbounds Rules in Our Security Groups Using Dynamic Blocks**
 
@@ -274,16 +274,23 @@ resource "aws_security_group" "nginx-sg"{
     )
 }
 
-# Security group rules for Nginx sg
-resource "aws_security_group_rule" "nginx-sg-ingress" {
-    for_each = { for idx, rule in var.sg_rules["nginx-sg"] : idx => rule }
-    
-    type                     = "ingress"
-    from_port                = each.value.from_port
-    to_port                  = each.value.to_port
-    protocol                 = each.value.protocol
-    source_security_group_id = aws_security_group.bastion-sg.id
-    security_group_id        = aws_security_group.nginx-sg.id
+# Security group rules for Nginx EC2 instances
+resource "aws_security_group_rule" "inbound-nginx-https" {
+    type              = "ingress"
+    from_port         = 443
+    to_port           = 443
+    protocol          = "tcp"
+    source_security_group_id = aws_security_group.ext-alb-sg.id # Allow traffic from external ALB security group
+    security_group_id = aws_security_group.nginx-sg.id
+}
+
+resource "aws_security_group_rule" "inbound-bastion-ssh" {
+    type              = "ingress"
+    from_port         = 22
+    to_port           = 22
+    protocol          = "tcp"
+    source_security_group_id = aws_security_group.bastion-sg.id # Allow traffic from Bastion Host security group 
+    security_group_id = aws_security_group.nginx-sg.id
 }
 
 # Security group for Internal ALB 
@@ -306,18 +313,26 @@ resource "aws_security_group" "int-alb-sg"{
     )
 }
 
-# Security group rules for internal application load balancer sg
-resource "aws_security_group_rule" "int-alb-sg-ingress" {
-    for_each = { for idx, rule in var.sg_rules["int-alb-sg"] : idx => rule }
-
-    type                        = "ingress"
-    from_port                   = each.value.from_port
-    to_port                     = each.value.to_port
-    protocol                    = each.value.protocol
-    source_security_group_id    = aws_security_group.nginx-sg.id
-    security_group_id           = aws_security_group.int-alb-sg.id
+# Security group rules for Internal ALB
+resource "aws_security_group_rule" "inbound-ialb-https"{
+    description        = "Allow HTTPS traffic from nginx security group"
+    type               = "ingress"
+    from_port          = 443
+    to_port            = 443
+    protocol           = "tcp"
+    source_security_group_id = aws_security_group.nginx-sg.id # Allow traffic from Nginx security group 
+    security_group_id  = aws_security_group.int-alb-sg.id
 }
 
+resource "aws_security_group_rule" "inbound-ialb-http"{
+    description        = "Allow  traffic from nginx security group"
+    type               = "ingress"
+    from_port          = 80
+    to_port            = 80
+    protocol           = "tcp"
+    source_security_group_id = aws_security_group.nginx-sg.id # Allow traffic from Nginx security group 
+    security_group_id  = aws_security_group.int-alb-sg.id
+}
 
 # Security group for Webserver EC2 instances
 resource "aws_security_group" "webserver-sg"{
@@ -333,16 +348,45 @@ resource "aws_security_group" "webserver-sg"{
     }
 }
 
-# Security group rules for webserver security group
-resource aws_security_group_rule "webserver-sg-ingress" {
-    for_each = { for idx, rule in var.sg_rules["webserver-sg"] : idx => rule }
+# Security group rules for Webserver EC2 instances
+resource "aws_security_group_rule" "inbound-web-https" {
+    description        = "Allow HTTPS traffic from Internal ALB" 
+    type               = "ingress"
+    from_port          = 443
+    to_port            = 443
+    protocol           = "tcp"
+    source_security_group_id = aws_security_group.int-alb-sg.id # Allow traffic from Internal ALB security group 
+    security_group_id  = aws_security_group.webserver-sg.id
+}
 
-    type                        = "ingress"
-    from_port                   = each.value.from_port
-    to_port                     = each.value.to_port
-    protocol                    = each.value.protocol
-    source_security_group_id    = aws_security_group.int-alb-sg.id
-    security_group_id           = aws_security_group.webserver-sg.id
+resource "aws_security_group_rule" "inbound-web-http" {
+    description        = "Allow HTTP traffic from bastion Security group for testing purposes" 
+    type               = "ingress"
+    from_port          = 80
+    to_port            = 80
+    protocol           = "tcp"
+    source_security_group_id = aws_security_group.bastion-sg.id # Allow Http traffic from Bastion security group 
+    security_group_id  = aws_security_group.webserver-sg.id
+}
+
+resource "aws_security_group_rule" "inbound-web-http-intAlb" {
+    description        = "Allow HTTP traffic from Internal application load balancer Security group" 
+    type               = "ingress"
+    from_port          = 80
+    to_port            = 80
+    protocol           = "tcp"
+    source_security_group_id = aws_security_group.int-alb-sg.id # Allow Http traffic from Bastion security group 
+    security_group_id  = aws_security_group.webserver-sg.id
+}
+
+resource "aws_security_group_rule" "inbound-web-ssh" {
+    description        = "Allow SSH traffic from Bastion Host"
+    type               = "ingress"
+    from_port          = 22
+    to_port            = 22
+    protocol           = "tcp"
+    source_security_group_id = aws_security_group.bastion-sg.id # Allow traffic from Bastion Host security group
+    security_group_id  = aws_security_group.webserver-sg.id
 }
 
 # Security group for Data Layer
@@ -365,17 +409,37 @@ resource "aws_security_group" "datalayer-sg" {
     )
 }
 
-# Security group rules for datalayer sg
-resource "aws_security_group_rule" "datalayer-sg-ingress" {
-    for_each = { for idx, rule in var.sg_rules["datalayer-sg"] : idx => rule }
-
-    type                        = "ingress"
-    from_port                   = each.value.from_port
-    to_port                     = each.value.to_port
-    protocol                    = each.value.protocol
-    source_security_group_id    = aws_security_group.webserver-sg.id
-    security_group_id           = aws_security_group.datalayer-sg.id
+# Security Group Rules for Data Layer Security Group
+resource "aws_security_group_rule" "inbound-nfs-port" {
+    description          = "Allow NFS traffic from Webserver" 
+    type                 = "ingress"
+    from_port            = 2049
+    to_port              = 2049
+    protocol             = "tcp"
+    source_security_group_id = aws_security_group.webserver-sg.id # Allow traffic from webserver security group 
+    security_group_id    = aws_security_group.datalayer-sg.id
 }
+
+resource "aws_security_group_rule" "inbound-mysql-bastion" {
+    description          = "Allow MySQL traffic from Bastion Host"
+    type                 = "ingress"
+    from_port            = 3306
+    to_port              = 3306
+    protocol             = "tcp"
+    source_security_group_id = aws_security_group.bastion-sg.id # Allow traffic from Bastion Host security group
+    security_group_id    = aws_security_group.datalayer-sg.id
+}
+
+resource "aws_security_group_rule" "inbound-mysql-webserver" {
+    description          = "Allow MySQL traffic from Webserver"
+    type                 = "ingress"
+    from_port            = 3306
+    to_port              = 3306
+    protocol             = "tcp"
+    source_security_group_id = aws_security_group.webserver-sg.id # Allow traffic from Webserver security group 
+    security_group_id    = aws_security_group.datalayer-sg.id
+}
+ 
 ````
   
 **variables.tf: Defining Security Group Rules and other variables (below)**
@@ -420,7 +484,7 @@ variable "vpc_id" {
 }
 ````
   
-> **Driving it home:** Dynamic blocks are just like factories/companies that can help you produce gadgets of varying specifications, and it ensures consistency and efficiency while at it without manual repetition.
+> **Making sense of Dynamic Blocks:** Dynamic blocks are just like factories/companies that can help you produce gadgets of varying specifications, and it ensures consistency and efficiency while at it without manual repetition.
 
 ![Screenshot: Terraform Security Group with Dynamic Blocks](./images/terraform-security-group-dynamic..png)
 
@@ -487,7 +551,7 @@ resource "aws_launch_template" "nginx-launch-template" {
 }
 ````
   
-> 💡 **Tip:** When/If you provide a default AMI in the `lookup` function helps you to ensure that Terraform doesn't fail if a region key is missing.
+> 💡 **Tip:** When/If you provide a default AMI in the `lookup` function, it helps you to ensure that Terraform doesn't fail if a region key is missing.
 ![Screenshot: Terraform EC2 Instance with Dynamic AMI Selection](./images/terraform-ec2-ami-selection.png)
 
 ---
@@ -527,7 +591,7 @@ resource "aws_subnet" "public" {
 
 ## Terraform Modules
 
-Modules are reusable, self-contained packages of Terraform configurations. They promote code reusability, maintainability, and separation of concerns.
+Modules are reusable, self-contained packages of Terraform configurations. They help youpromote code reusability, maintainability, and separation of concerns.
 
 ### Creating and Using Modules
 
