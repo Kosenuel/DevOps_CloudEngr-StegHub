@@ -737,7 +737,7 @@ module "compute" {
 - **Input Validation:** Use variables with clear descriptions and default values where applicable. Also, this is where you consume the variables and values that the root or calling module passes to the module.
 - **Output Management:** Clearly define outputs for modules to expose necessary information to root configurations.
 
-> 💡**Very very important concept illustration:** Modularizing your Terraform codebase is similar to organizing a shelf of goods, where  you package each item (files) into a carton (moodule) before packing them on the shelf to ship them to a customer.
+> 💡**Very very important concept illustration:** Modularizing your Terraform codebase is similar to organizing a shelf of goods, where  you package each item (files) into a carton (module) before packing them on the shelf to ship them to a customer.
 
 ![Screenshot: Module Directory Structure](./images/terraform-module-directory.png)
 
