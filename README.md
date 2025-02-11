@@ -46,5 +46,5 @@ Then in the side notes, I attempted to create a Prometheus + Grafana monitoring 
 
 - **Project 17:** [**(Iac) Automating Infrastructure Using Terraform Part 2**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/17.(Iac)_Automating_Infrastructure_Using_Terraform_Part_2#-lessons-learned): In this project, we created a terraform configuration that provisions all the resources needed to create the infrastructure we created in the last project (where we created the infrastructure manually)
 
-- **Project 16:** [**(Iac) Automating Infrastructure Using Terraform Part 3**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/18.(Iac)_Automating_Infrastructure_Using_Terraform_Part_3): Here, we modularized our terraform configuration, we refactored the codebase of the last project to make it more readable, reusable and maintainable.
+- **Project 18:** [**(Iac) Automating Infrastructure Using Terraform Part 3**](https://github.com/Kosenuel/DevOps_CloudEngr-StegHub/tree/main/18.(Iac)_Automating_Infrastructure_Using_Terraform_Part_3): Here, we modularized our terraform configuration, we refactored the codebase of the last project to make it more readable, reusable and maintainable.
 ---
