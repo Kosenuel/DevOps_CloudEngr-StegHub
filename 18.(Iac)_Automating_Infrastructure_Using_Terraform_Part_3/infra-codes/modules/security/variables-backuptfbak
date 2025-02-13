@@ -1,0 +1,159 @@
+variable "sg_rules" {
+    description         = "Map of security group rules"
+     type = map(list(object({
+        description              = string
+        from_port                = number
+        to_port                  = number
+        protocol                 = string
+        cidr_blocks              = optional(list(string))
+        source_security_group_id = optional(string)
+    })))
+    # default = {
+    #     # Security group rules for External Application Load Balancer
+    #     ext-alb-sg = [
+    #         {
+    #             description = "Allow HTTP traffic from the internet"
+    #             from_port   = 80
+    #             to_port     = 80
+    #             protocol    = "tcp"
+    #             cidr_blocks = ["0.0.0.0/0"]
+    #         },
+    #         {
+    #             description = "Allow HTTPS traffic from the internet"
+    #             from_port   = 443
+    #             to_port     = 443
+    #             protocol    = "tcp"
+    #             cidr_blocks = ["0.0.0.0/0"]
+    #         },
+    #         {
+    #             description = "Allow SSH traffic from the internet"
+    #             from_port   = 22
+    #             to_port     = 22
+    #             protocol    = "tcp"
+    #             cidr_blocks = ["0.0.0.0/0"]
+    #         }
+    #     ],
+
+    #     # Security group rules for Bastion EC2 instances
+    #     bastion-sg = [
+    #         {
+    #             description = "Allow SSH traffic from the internet"
+    #             from_port   = 22
+    #             to_port     = 22
+    #             protocol    = "tcp"
+    #             cidr_blocks = ["0.0.0.0/0"]
+    #         }
+    #     ],
+
+    #     # Security group rules for Nginx EC2 instances
+    #     nginx-sg = [
+    #         {
+    #             description = "Allow HTTPS traffic from the external application load balancer"
+    #             from_port   = 443
+    #             to_port     = 443
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         },
+    #         {
+    #             description = "Allow SSH Access from Bastion security group"
+    #             from_port   = 22
+    #             to_port     = 22
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         }
+    #     ],
+
+    #     # Security group rules for Internal ALB
+    #     int-alb-sg = [
+    #         {
+    #             description = "Allow HTTPS traffic from Nginx security group"
+    #             from_port   = 443
+    #             to_port     = 443
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         },
+    #         {
+    #             description = "Allow HTTP traffic from Nginx security group"
+    #             from_port   = 80
+    #             to_port     = 80
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         }
+    #     ],
+
+    #     # Security group rules for Webserver EC2 instances
+    #     webserver-sg = [
+    #         {
+    #             description = "Allow HTTPS traffic from Internal ALB"
+    #             from_port   = 443
+    #             to_port     = 443
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         }, 
+    #         {
+    #             description = "Allow HTTP traffic from Internal ALB"
+    #             from_port   = 80
+    #             to_port     = 80
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         }, 
+    #         {
+    #             description = "Allow HTTPS traffic from Bastion Host (Testing purposes only)"
+    #             from_port   = 80
+    #             to_port     = 80
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         }, 
+    #         {
+    #             description = "Allow SSH traffic from Baston Host"
+    #             from_port   = 22
+    #             to_port     = 22
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         } 
+    #     ],
+
+    #     # Security group rules for Data Layer
+    #     datalayer-sg = [
+    #         {
+    #             description = "Allow NFS traffic from webserver security group"
+    #             from_port   = 2049
+    #             to_port     = 2049
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         },
+    #         {
+    #             description = "Allow MySQL traffic from webserver security group"
+    #             from_port   = 3306
+    #             to_port     = 3306
+    #             protocol    = "tcp"
+    #             source_security_group_id = ""
+    #         }
+    #     ]
+    # }
+}
+
+variable "tags" {
+    description = "Tags to be assigned to resources"
+    type        = map(string)
+}
+
+variable "domain_name" {
+    description = "This is the domain name that would be used in the ACM cetificate"
+    type        = string
+}
+
+variable "ext-alb-dns_name" {
+    description = "DNS name of the external application load balancer"
+    type        = string
+}
+
+variable "ext-alb-zone_id" {
+    description = "Zone ID of the external application load balancer"
+    type        = string
+}
+
+variable "vpc_id" {
+    description = "ID of the VPC where the security groups would be created in"
+    type        = string
+}
