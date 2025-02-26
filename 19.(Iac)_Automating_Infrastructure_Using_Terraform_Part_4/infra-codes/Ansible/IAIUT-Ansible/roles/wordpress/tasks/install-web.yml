@@ -1,0 +1,46 @@
+---
+- name: Install Apache (httpd) packages
+  ansible.builtin.yum:
+    name: "{{ httpd_packages }}"
+    state: present
+  become: yes
+
+- name: Install Php packages
+  ansible.builtin.yum:
+    name: "{{ php_packages }}"
+    state: present
+  become: yes
+
+- name: Create webroot directory
+  ansible.builtin.file:
+    path: "{{  wordpress_dir }}"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Enable and start httpd and php-fpm services
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop:
+    - httpd
+    - php-fpm
+  become: yes
+
+- name: Configure Apache health check vhost using template
+  ansible.builtin.template:
+    src: httpd-healthz.conf.j2
+    dest: /etc/httpd/conf.d/healthz.conf
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+  notify: Restart httpd
+
+- name: Disable the default welcome configuration if present
+  ansible.builtin.command: >
+    mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf_backup
+  args:
+    removes: /etc/httpd/conf.d/welcome.conf
+  become: yes

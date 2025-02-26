@@ -1,0 +1,57 @@
+---
+- name: Create webroot directory
+  ansible.builtin.file:
+    path: "{{  web_root }}"
+    state: directory
+    mode: '0755'
+  become: yes
+
+- name: Install httpd, mod_ssl, and Php packages
+  ansible.builtin.yum:
+    name:
+      - httpd
+      - mod_ssl
+      - php
+      - php-mysqlnd
+      - php-gd
+      - php-curl
+      - php-common
+      - php-fpm
+      - php-mbstring
+      - php-opcache
+      - php-xml
+      - php-intl
+      - php-json
+    state: present
+  become: yes
+
+- name: Ensure php-fpm is started and enabled
+  ansible.builtin.service:
+    name: php-fpm
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Ensure httpd is started and enabled
+  ansible.builtin.service:
+    name: httpd
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Configure Apache health check virtual host using template configs
+  ansible.builtin.template:
+    src: httpd-healthz.conf.j2
+    dest: /etc/httpd/conf.d/healthz.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+  notify: Restart httpd
+
+- name: Disable default welcome configuration if still present
+  ansible.builtin.command: "mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.conf_backup"
+  args: 
+    removes: /etc/httpd/conf.d/welcome.conf
+  become: yes
+  

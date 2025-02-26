@@ -1,0 +1,34 @@
+---
+- name: Update system packages
+  ansible.builtin.yum:
+    name: '*'
+    state: latest
+  become: yes
+
+- name: Install extra system dependencies
+  ansible.builtin.yum:
+    name:
+      - git
+      - mysql
+      - make
+      - rpm-build
+      - cargo
+      - openssl-devel
+      - rust
+      - wget
+      - policycoreutils-python-utils
+      - python3 
+      - python3-pip
+      - nfs-utils
+      - stunnel
+      - bind-utils
+    state: present
+  become: yes
+
+- name: Install Boto3 and botocore
+  ansible.builtin.pip:
+    name: 
+      - boto3 
+      - botocore
+    state: present
+  become: yes

@@ -1,0 +1,18 @@
+---
+- name: Setup and Configure Nginx servers
+  hosts: tag_ACS_nginx
+  become: true
+  roles:
+    - nginx
+
+- name: Setup and Configure Tooling application servers
+  hosts: tag_ACS_tooling
+  become: true
+  roles:
+    - tooling
+
+- name: Setup and Configure Wordpress servers
+  hosts: tag_ACS_wordpress
+  become: true
+  roles:
+    - wordpress

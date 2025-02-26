@@ -1,0 +1,17 @@
+---
+# The handler(s) for wordpress role
+- name: Restart httpd
+  ansible.builtin.service:
+    name: httpd
+    state: restarted
+  become: yes
+
+- name: Restart php-fpm
+  ansible.builtin.service:
+    name: php-fpm
+    state: restarted
+  become: yes
+  
+- name: Restore SELinux context
+  ansible.builtin.command: "restorecon -Rv {{ wordpress_dir }}"
+  become: yes

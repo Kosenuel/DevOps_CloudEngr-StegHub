@@ -1,0 +1,6 @@
+---
+- import_tasks: update-system.yml
+- import_tasks: setup-efs.yml
+- import_tasks: install-web.yml
+- import_tasks: setup-site.yml
+- import_tasks: setup-db.yml

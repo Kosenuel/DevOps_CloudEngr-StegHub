@@ -1,0 +1,13 @@
+---
+- name: Update system packages (if set to 'true')
+  ansible.builtin.yum:
+    name: "*"
+    state: latest
+  when: update_packages
+  become: yes
+
+- name: Install extra dependencies
+  ansible.builtin.yum:
+    name: "{{ extra_packages }}"
+    state: present
+  become: yes

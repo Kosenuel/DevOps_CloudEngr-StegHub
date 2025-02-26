@@ -1,0 +1,46 @@
+---
+- name: Clone the tooling application repository
+  ansible.builtin.git:
+    repo: "{{ repo_url }}"
+    dest: "{{ repo_clone_path }}"
+    clone: yes
+    update: yes
+  become: yes
+
+- name: Copy application HTML files to the web root
+  ansible.builtin.copy:
+    src: "{{ repo_clone_path }}/html/"
+    dest: "{{ web_root }}/"
+    mode: '0755'
+    remote_src: yes
+  # when: (web_root_contents.stdout | trim) == ""
+  become: yes
+
+- name: Create health check file 
+  ansible.builtin.file:
+    path: "{{ web_root }}/healthz"
+    state: touch
+    mode: '0644'
+  become: yes
+
+- name: Set ownership of web root folder to apache
+  ansible.builtin.file:
+    path: "{{ web_root }}"
+    owner: apache
+    group: apache
+    recurse: yes
+  become: yes
+
+- name: Apply SELinux file context to web root files and directories
+  community.general.sefcontext:
+    target: "{{ web_root }}(/.*)?"
+    setype: httpd_sys_rw_content_t
+    state: present
+  become: yes
+  notify: Restore SELinux context
+
+- name: Restart httpd
+  ansible.builtin.service:
+    name: httpd
+    state: restarted
+  become: yes

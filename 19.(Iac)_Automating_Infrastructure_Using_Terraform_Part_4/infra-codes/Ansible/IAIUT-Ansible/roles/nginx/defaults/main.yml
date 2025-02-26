@@ -1,0 +1,17 @@
+---
+# Nginx installation and configuration defaults values
+
+# Package and service settings
+nginx_package: nginx
+nginx_service_name: nginx
+
+# Health check file settings
+healthz_path: /var/www/html/healthz
+healthz_content: "OK and Healthy"
+healthz_mode: "0644"
+
+# Main Nginx config file
+nginx_conf_path: /etc/nginx/nginx.conf
+
+# Proxy settings (for internal app load balancer dns name)
+internal_alb_dns_name: "internal-int-alb-1849253398.eu-west-2.elb.amazonaws.com"

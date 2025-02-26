@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: Emmanuel Okose
+  description: "Installs and configures Nginx with a health check and reverse proxy setting(s)"
+  license: MIT
+  min_ansible_version: "2.9"
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+dependencies: []

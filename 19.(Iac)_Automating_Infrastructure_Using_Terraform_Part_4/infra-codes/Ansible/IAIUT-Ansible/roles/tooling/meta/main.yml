@@ -1,0 +1,14 @@
+galaxy_info:
+  author: Emmanuel Okose
+  description: Ansible role for provisioning a web application with EFS and MySQL.
+  company: StegHub
+  license: MIT
+  min_ansible_version: 2.9
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+  dependencies: []
+
+dependencies: []

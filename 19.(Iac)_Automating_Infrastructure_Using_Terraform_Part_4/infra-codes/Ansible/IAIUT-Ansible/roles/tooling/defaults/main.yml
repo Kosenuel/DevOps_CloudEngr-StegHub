@@ -1,0 +1,18 @@
+# Amazon EFS configuration
+efs_id: "fs-0a3c4f63ad03674fd" # Update this guy with the EFS ID
+tooling_ap_id: "fsap-0af23ac301583244c" # Update this guy with the Tooling Access Point ID
+efs_mount: "/var/www" 
+
+# Tooling configuration
+repo_url: "https://github.com/Kosenuel/tooling.git"
+repo_clone_path: "/home/ec2-user/tooling"
+web_root: "/var/www/html"
+
+# Database configuration
+db_host: "terraform-20250223130611678200000008.c3e2qugyuyx8.eu-west-2.rds.amazonaws.com" # Update this guy with the RDS endpoint
+db_admin_user: "admin"
+db_admin_pass: "devopsacts"
+app_db_name: "toolingdb"
+app_db_user: "kosenuel"
+app_db_pass: "devopsacts"
+

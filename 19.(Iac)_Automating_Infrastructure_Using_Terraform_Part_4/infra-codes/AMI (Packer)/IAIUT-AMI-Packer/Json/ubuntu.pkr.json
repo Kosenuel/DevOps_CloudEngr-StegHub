@@ -1,0 +1,24 @@
+{
+    "variables": {
+      "region": "eu-west-2"
+    },
+    "builders": [
+      {
+        "type": "amazon-ebs",
+        "ami_name": "terraform-ubuntu-prj-19-{{timestamp}}",
+        "instance_type": "t2.micro",
+        "region": "{{user `region`}}",
+        "source_ami": "ami-0123456789abcdef0", 
+        "ssh_username": "ubuntu",
+        "tags": {
+          "Name": "terraform-ubuntu-prj-19"
+        }
+      }
+    ],
+    "provisioners": [
+      {
+        "type": "shell",
+        "script": "ubuntu.sh"
+      }
+    ]
+  }

@@ -1,0 +1,34 @@
+# Serve files from /var/www/html
+DocumentRoot "/var/www/html"
+
+<Directory "/var/www/html">
+    AllowOverride None
+    Require all granted
+</Directory>
+
+# Custom handling for /healthz
+Alias /healthz /var/www/html/healthz
+
+<Location "/healthz">
+    # Force 200 OK response code
+    ErrorDocument 200 "OK"
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule .* - [R=200]
+</Location>
+
+# <VirtualHost *:80>
+#     DocumentRoot {{ web_root }}
+
+#     # Health check endpoint
+#     Alias "/healthz" "{{ web_root }}/healthz"
+#     <Directory "{{ web_root }}/healthz">
+#         Options None
+#         AllowOverride None
+#         Require all granted
+#     </Directory>
+
+#     ErrorLog /var/log/httpd/healthz_error.log
+#     CustomLog /var/log/httpd/healthz_access.log combined
+# </VirtualHost>
+

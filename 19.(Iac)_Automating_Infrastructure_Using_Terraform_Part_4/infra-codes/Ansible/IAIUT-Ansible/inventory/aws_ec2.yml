@@ -1,0 +1,29 @@
+plugin: amazon.aws.aws_ec2
+# aws_profile: default
+
+regions:
+  - eu-west-2
+
+strict: False
+
+keyed_groups:
+  - key: tags.Name 
+    prefix: tag 
+
+filters: 
+  tag:Name:
+    - ACS_bastion
+    - ACS_nginx 
+    - ACS_tooling
+    - ACS_wordpress 
+  instance-state-name: running
+
+hostnames:
+  - private-ip-address
+  - tag:Name
+  - dns-name
+  - ip-address
+
+compose:
+  ansible_host: private-ip-address
+  ansible_user: ec2-user

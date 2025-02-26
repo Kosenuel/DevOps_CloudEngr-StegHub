@@ -1,0 +1,4 @@
+---
+- import_tasks: update-system.yml
+- import_tasks: install-nginx.yml
+- import_tasks: config-nginx.yml

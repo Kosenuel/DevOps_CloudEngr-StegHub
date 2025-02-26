@@ -1,0 +1,56 @@
+---
+# System and package configuration
+update_packages: true
+extra_packages:
+  - git
+  - mysql
+  - make
+  - rpm-build
+  - cargo
+  - openssl-devel
+  - rust
+  - policycoreutils-python-utils
+  - wget
+  - python3 
+  - python3-pip
+  - nfs-utils
+  - stunnel
+  - bind-utils
+
+  # Amazon EFS configuration
+efs_id: "fs-0a3c4f63ad03674fd" # Update this guy with the EFS ID
+wordpress_ap_id: "fsap-0b44a6e78693068c4" # Update this guy with the WordPress Access Point ID
+efs_mount: "/var/www"
+
+# Apache & Php configuration
+httpd_packages:
+  - httpd
+  - mod_ssl
+php_packages: 
+  - php
+  - php-mysqlnd
+  - php-fpm
+  - php-json
+  - php-mbstring
+  - php-xml
+  - php-opcache
+  - php-intl
+  - php-curl
+  - php-zip
+
+# WordPress configuration
+wordpress_download_url: "http://wordpress.org/latest.tar.gz"
+wordpress_dir: "/var/www/html"
+wp_config: "/var/www/html/wp-config.php"
+
+# Databse configuration
+rds_endpoint: "terraform-20250223130611678200000008.c3e2qugyuyx8.eu-west-2.rds.amazonaws.com" # Update this guy with the RDS endpoint
+db_admin_user: "admin"
+db_admin_pass: "devopsacts"
+db_name: "wordpressdb"
+db_user: "wpuser"
+db_password: "devopsacts"
+
+# Logging & temporary files
+log_file: "/var/log/wordpress_userdata.log"
+tmp_mysql_cnf: "/tmp/mysql.cnf"

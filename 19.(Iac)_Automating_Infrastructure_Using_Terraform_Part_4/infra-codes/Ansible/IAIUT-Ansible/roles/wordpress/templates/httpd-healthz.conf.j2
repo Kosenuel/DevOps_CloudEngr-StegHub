@@ -1,0 +1,14 @@
+<VirtualHost *:80>
+    DocumentRoot {{ wordpress_dir }}
+
+    # Health check endpoint
+    Alias "/healthz" "{{ wordpress_dir }}/healthz"
+    <Directory "{{ wordpress_dir }}/healthz">
+        Options None
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    ErrorLog /var/log/httpd/healthz_error.log
+    CustomLog /var/log/httpd/healthz_access.log combined
+    </VirtualHost>

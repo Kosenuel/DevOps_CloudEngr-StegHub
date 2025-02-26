@@ -1,0 +1,57 @@
+---
+- name: Install EFS utilities if it is not already installed
+  block:
+    - name: Check if amazon-efs-utils is installed
+      ansible.builtin.shell: rpm -qa | grep amazon-efs-utils
+      register: efs_utils_installed
+      ignore_errors: true
+      changed_when: false
+
+    - name: Clone efs-utils repository
+      git:
+        repo: 'https://github.com/aws/efs-utils'
+        dest: /tmp/efs-utils
+      become: yes
+      when: efs_utils_installed.rc != 0
+
+    - name: Build the amazon-efs-utils rpm
+      command: make rpm
+      args:
+        chdir: /tmp/efs-utils
+      become: yes
+      when: efs_utils_installed.rc != 0
+
+    - name: Install amazon-efs-utils rpm
+      command: rpm -i /tmp/efs-utils/build/amazon-efs-utils*rpm
+      become: yes
+      when: efs_utils_installed.rc != 0
+
+  #   - name: Install amazon-efs-utils rpm
+  #     ansible.builtin.yum:
+  #       name: "/tmp/efs-utils/build/amazon-efs-utils*rpm"
+  #       state: present
+  #     become: yes
+  #     when: efs_utils_installed.rc != 0
+  # when: ansible_facts.package['amazon-efs-utils'] is not defined
+
+- name: Ensure that the EFS mount directory exists
+  ansible.builtin.file:
+    path: "{{ efs_mount }}"
+    state: directory
+  become: yes
+
+- name: Mount EFS sharepoint if not already mounted
+  ansible.builtin.mount:
+    path: "{{ efs_mount }}"
+    src: "{{ efs_id }}:/"
+    fstype: efs
+    opts: "nosuid,noexec,defaults,tls,accesspoint={{ tooling_ap_id }}"
+    state: mounted
+  become: yes
+
+- name: Ensure that the EFS mount persists in fstab
+  lineinfile:
+    path: /etc/fstab
+    line: "{{ efs_id }}:/ {{ efs_mount }} efs _netdev,tls,accesspoint={{ tooling_ap_id }} 0 0"
+    state: present
+  become: yes

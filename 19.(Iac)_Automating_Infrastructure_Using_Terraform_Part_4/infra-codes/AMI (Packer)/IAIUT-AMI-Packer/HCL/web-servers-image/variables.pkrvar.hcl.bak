@@ -1,0 +1,11 @@
+region = "eu-west-2"
+
+tags = {
+    Owner = "DevOps Team"
+    Project = "Terraform-Cloud"
+    Environment = "dev"
+}
+
+bastion_public_key     = "ssh-rsa st-2.compute.internal"
+# source_ami           = "ami-0f9535ac605dc21d5" # Bro, remember to replace with the latest RHEL AMI ID. This is for web instances.
+source_ami           = "ami-0aa938b5c246ef111" # Bro, remember to replace with the latest CentOs AMI ID. This is for web instances.

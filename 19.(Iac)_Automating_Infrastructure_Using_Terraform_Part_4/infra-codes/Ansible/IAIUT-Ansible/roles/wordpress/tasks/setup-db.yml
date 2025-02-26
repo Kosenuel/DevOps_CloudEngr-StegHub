@@ -1,0 +1,49 @@
+---
+- name: Ensure PyMySQL is installed
+  pip: 
+    name: pymysql
+    state: present
+  become: yes
+
+- name: Wait for the DB host to become available
+  ansible.builtin.wait_for:
+    host: "{{ rds_endpoint }}"
+    port: 3306
+    state: started
+    delay: 10
+    timeout: 300
+  become: yes
+
+- name: Create the WordPress database
+  community.mysql.mysql_db:
+    login_host: "{{ rds_endpoint }}"
+    login_user: "{{ db_admin_user }}"
+    login_password: "{{ db_admin_pass }}"
+    name: "{{ db_name }}"
+    collation: utf8_general_ci
+    encoding: utf8
+    state: present
+  become: yes
+
+- name: Create or update WordPress database user with privileges
+  community.mysql.mysql_user:
+    login_host: "{{ rds_endpoint }}"
+    login_user: "{{ db_admin_user }}"
+    login_password: "{{ db_admin_pass }}"
+    name: "{{ db_user }}"
+    password: "{{ db_password }}"
+    host: "%"
+    priv: "{{ db_name }}.*:ALL"
+    state: present
+  become: yes
+
+# - name: Update WordPress configuration with database credentials
+#   ansible.builtin.replace:
+#     path: "{{ wp-config }}"
+#     regexp: "{{ item.regexp }}"
+#     replace: "{{ item.line }}"
+#   loop:
+#   - { regexp: 'localhost', line: "{{ rds_endpoint }}" }
+#   - { regexp: 'database_name_here', line: "{{ db_name }}" }
+#   - { regexp: 'username_here', line: "{{ db_user }}" }
+#   - { regexp: 'password_here', line: "{{ db_password }}" }

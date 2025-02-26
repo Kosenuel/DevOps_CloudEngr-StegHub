@@ -1,0 +1,13 @@
+---
+- name: Update package repository (RedHat-based)
+  ansible.builtin.yum:
+    name: "*"
+    state: latest
+  when: ansible_os_family == "RedHat"
+  become: yes
+
+- name: Update package repository (Debian-based)
+  ansible.builtin.apt:
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+  become: yes

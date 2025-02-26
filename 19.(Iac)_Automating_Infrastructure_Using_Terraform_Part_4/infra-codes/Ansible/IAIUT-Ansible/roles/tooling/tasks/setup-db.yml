@@ -1,0 +1,58 @@
+--- 
+- name: Install Python MySQL client (PyMySQL)
+  ansible.builtin.pip:
+    name: pymysql
+    state: present
+  become: yes
+
+- name: Wait for the database port to be available (if it is still being provisioned)
+  ansible.builtin.wait_for:
+    host: "{{ db_host }}"
+    port: 3306
+    state: started
+    delay: 10
+    timeout: 300
+
+- name: Create MySQL database using provided admin credentials
+  community.mysql.mysql_db:
+    login_host: "{{ db_host }}"
+    login_user: "{{ db_admin_user }}"
+    login_password: "{{ db_admin_pass }}"
+    name: "{{ app_db_name }}"
+    collation: utf8_general_ci
+    encoding: utf8
+    state: present
+
+- name: Set up database user privileges
+  community.mysql.mysql_user:
+    login_host: "{{ db_host }}"
+    login_user: "{{ db_admin_user }}"
+    login_password: "{{ db_admin_pass }}"
+    name: "{{ app_db_user }}"
+    password: "{{ app_db_pass }}"
+    priv: "{{ app_db_name }}.*:ALL"
+    host: "%"
+    state: present
+  
+- name: Import database schema
+  block:
+    - name: "Import database schema"
+      community.mysql.mysql_db: 
+        login_host: "{{ db_host }}"
+        login_user: "{{ db_admin_user }}"
+        login_password: "{{ db_admin_pass }}"
+        name: "{{ app_db_name }}"
+        state: import
+        target: "{{ repo_clone_path }}/tooling-db.sql"
+  rescue:
+    - name: Log import error 
+      ansible.builtin.debug:
+        msg: "Database schema import failed, but continuing with the playbook. -This issue is likely due to the database schema already existing. "
+
+- name: Update application database connection in functions.php
+  ansible.builtin.replace:
+    path: "{{ web_root }}/functions.php"
+    regexp: "\\$db\\s*=\\s*mysqli_connect\\(['\\\"][^'\\\"]*?\\);"
+    replace: "$db = mysqli_connect('{{ db_host }}', '{{ db_admin_user }}', '{{ db_admin_pass }}', '{{ app_db_name }}');"
+  become: yes
+

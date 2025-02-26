@@ -1,0 +1,50 @@
+---
+- name: Ensure WordPress directory exists
+  ansible.builtin.file:
+    path: "{{ wordpress_dir }}"
+    state: directory
+  become: yes
+
+- name: Download and extract WordPress if it is not already installed
+  ansible.builtin.unarchive:
+    src: "{{ wordpress_download_url }}"
+    dest: /tmp
+    remote_src: yes
+    creates: /tmp/wordpress
+  become: yes
+
+- name: Copy WordPress files into web directory
+  ansible.builtin.copy:
+    src: /tmp/wordpress/
+    dest: "{{ wordpress_dir }}"
+    remote_src: yes
+    owner: apache
+    group: apache
+    mode: "0755"
+  become: yes
+
+- name: Configure WordPress settings using template from wp-config-sample.php
+  ansible.builtin.template:
+    src: wp-config.php.j2
+    dest: "{{ wp_config }}"
+    owner: apache
+    group: apache
+    mode: "0644"
+  become: yes
+
+- name: Apply SELinux file context to web root files and directories
+  community.general.sefcontext:
+    target: "{{ wordpress_dir }}(/.*)?"
+    setype: httpd_sys_rw_content_t
+    state: present
+  become: yes
+  notify: Restore SELinux context
+
+- name: Create a simple health check file for WordPress (majorly for the loadbalancers to utilize in knowing the state of the machine)
+  ansible.builtin.copy:
+    dest: "{{ wordpress_dir }}/healthz"
+    content: "OK and Healthy"
+    owner: apache
+    group: apache
+    mode: "0644"
+  become: yes

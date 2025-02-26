@@ -1,0 +1,25 @@
+---
+- name: Create directory for health check file
+  ansible.builtin.file:
+    path: "{{ healthz_path | dirname }}"
+    state: directory
+    mode: "0755"
+  become: yes
+
+- name: Create health check file
+  ansible.builtin.copy:
+    dest: "{{ healthz_path }}"
+    content: "{{ healthz_content }}"
+    mode: "{{ healthz_mode }}"
+  become: yes
+
+- name: Deploy Nginx configuration from template
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_conf_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  become: yes
+  notify: 
+    - Reload Nginx
